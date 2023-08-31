@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "621754811261",
+    "project_id": "mydictionary-c1775",
+    "storage_bucket": "mydictionary-c1775.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621754811261:android:c24044b39f5b545126c214",
+        "android_client_info": {
+          "package_name": "com.halilkrkn.mydictionary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "621754811261-qu7qeruumkcgtr61anst0k09et56dhqg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.halilkrkn.mydictionary",
+            "certificate_hash": "b9d4c5c993eceda8e815c5d37ea77f72d482a385"
+          }
+        },
+        {
+          "client_id": "621754811261-1272u179gmmorner0is73o1saos0vdrj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4GoHQBVjzD_wToaQV5Lv1sfL6cAyLC0k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "621754811261-1272u179gmmorner0is73o1saos0vdrj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
