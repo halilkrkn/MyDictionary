@@ -16,12 +16,14 @@ import com.halilkrkn.mydictionary.R
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
+
 class GoogleAuthUiClient(
     private val context: Context,
     private val oneTapClient: SignInClient,
 ) {
     private val auth = Firebase.auth
 
+    // Kullanıcıyı Google hesabı üzerinden oturum açma işlemine yönlendiren fonksiyon. Bu işlem, tek dokunuşla oturum açma istemcisi aracılığıyla gerçekleştirilir.
     suspend fun signIn(): IntentSender? {
         val result = try {
             oneTapClient.beginSignIn(
@@ -35,6 +37,7 @@ class GoogleAuthUiClient(
         return result?.pendingIntent?.intentSender
     }
 
+    //Google hesabı üzerinden gelen oturum açma isteğini işleyen fonksiyon.
     suspend fun signInWithIntent(intent: Intent): SignInResult {
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
@@ -63,6 +66,7 @@ class GoogleAuthUiClient(
         }
     }
 
+    // Kullanıcıyı oturumdan çıkış yapmaya yönlendiren fonksiyon.
     suspend fun signOut() {
         try {
             oneTapClient.signOut().await()
@@ -73,6 +77,7 @@ class GoogleAuthUiClient(
         }
     }
 
+    // Mevcut oturum açmış kullanıcının bilgilerini döndüren fonksiyon.
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
@@ -82,6 +87,7 @@ class GoogleAuthUiClient(
         )
     }
 
+    // Tek dokunuşla oturum açma isteği için yapılandırmayı oluşturan fonksiyon.
     private fun buildSignInRequest(): BeginSignInRequest {
         return BeginSignInRequest.Builder()
             .setGoogleIdTokenRequestOptions(
