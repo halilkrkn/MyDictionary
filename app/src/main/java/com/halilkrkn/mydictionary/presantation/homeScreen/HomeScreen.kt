@@ -33,7 +33,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -51,21 +50,24 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.android.gms.auth.api.identity.Identity
-import com.halilkrkn.mydictionary.data.auth.GoogleAuthUiClient
+import com.google.firebase.auth.FirebaseAuth
+import com.halilkrkn.mydictionary.data.auth.GoogleAuthUiClientImpl
 import com.halilkrkn.mydictionary.data.auth.UserData
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
 ) {
     val context = LocalContext.current.applicationContext
     val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
+    val firebaseAuth = FirebaseAuth.getInstance()
 
     val googleAuthUiClient by lazy {
-        GoogleAuthUiClient(
+        GoogleAuthUiClientImpl(
             context = context,
             oneTapClient = Identity.getSignInClient(context),
+            auth = firebaseAuth
         )
     }
 
@@ -74,31 +76,30 @@ fun HomeScreen(
         onSignOut = {
             lifecycleScope.launch {
                 googleAuthUiClient.signOut()
-
                 Toast.makeText(
                     context,
                     "Signed Out",
                     Toast.LENGTH_LONG
                 ).show()
-
                 navController.popBackStack()
             }
         }
     )
 }
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignOutPersonTabBar(
     userData: UserData?,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
 ) {
 //    var searchText by remember { mutableStateOf("") }
     var isProfilePopupVisible by remember { mutableStateOf(false) }
 //    val keyboardController = LocalSoftwareKeyboardController.current
 
 
-    Scaffold (
+    Scaffold(
         topBar = {
             Column(
                 modifier = Modifier
@@ -198,110 +199,74 @@ fun SignOutPersonTabBar(
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Column(
-                                modifier = Modifier.wrapContentSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                if (userData?.profilePictureUrl != null) {
-                                    AsyncImage(
-                                        model = userData.profilePictureUrl,
-                                        contentDescription = "Profile Picture",
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .border(
-                                                border = BorderStroke(
-                                                    width = 1.dp,
-                                                    color = Color.DarkGray,
-                                                ),
-                                                shape = CircleShape
-                                            )
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
-                                if (userData?.username != null) {
-                                    Text(
-                                        text = userData.username,
-                                        textAlign = TextAlign.Center,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
-                                if (userData?.email != null) {
-                                    Text(
-                                        text = userData.email,
-                                        textAlign = TextAlign.Center,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Light
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
-                                Button(
-                                    onClick = {
-                                        // Çıkış işlemi burada yapılabilir
-                                        isProfilePopupVisible = false
-                                        onSignOut()
-                                    }
-                                ) {
-                                    Text(text = "Çıkış Yap")
-                                }
-                            }
+                            SignOut(
+                                userData = userData,
+                                onSignOut = onSignOut,
+                                isProfilePopupVisible = isProfilePopupVisible
+                            )
                         }
                     }
                 }
             }
         }
-    ){}
+    ) {}
 }
 
-/*@Composable
+@Composable
 fun SignOut(
     userData: UserData?,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    isProfilePopupVisible: Boolean
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.wrapContentSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         if (userData?.profilePictureUrl != null) {
             AsyncImage(
                 model = userData.profilePictureUrl,
                 contentDescription = "Profile Picture",
                 modifier = Modifier
-                    .size(150.dp)
+                    .size(48.dp)
+                    .border(
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = Color.DarkGray,
+                        ),
+                        shape = CircleShape
+                    )
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
         if (userData?.username != null) {
             Text(
                 text = userData.username,
                 textAlign = TextAlign.Center,
-                fontSize = 36.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
         if (userData?.email != null) {
             Text(
                 text = userData.email,
                 textAlign = TextAlign.Center,
-                fontSize = 24.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Light
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
         Button(
-            onClick = onSignOut,
-            modifier = Modifier
-                .clip(RoundedCornerShape(50.dp))
+            onClick = {
+                // Çıkış işlemi burada yapılabilir
+                isProfilePopupVisible
+                onSignOut()
+            }
         ) {
-            Text(text = "Sign Out")
+            Text(text = "Çıkış Yap")
         }
     }
-}*/
+}

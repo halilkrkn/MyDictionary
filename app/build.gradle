@@ -96,12 +96,19 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.5.2"
 
+
+    // ONE TAP FACEBOOK SIGN IN WITH FIREBASE
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4')
+    implementation 'com.facebook.android:facebook-login:latest.release'
+
+
     // ONE TAP GOOGLE SIGN IN WITH FIREBASE
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
+    implementation("com.google.firebase:firebase-auth-ktx")
     // Also add the dependency for the Google Play services library and specify its version
     implementation("com.google.android.gms:play-services-auth:20.6.0")
 
