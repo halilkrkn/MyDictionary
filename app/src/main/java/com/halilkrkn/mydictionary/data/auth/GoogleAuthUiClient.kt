@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.firebase.auth.GoogleAuthProvider
@@ -99,5 +101,60 @@ class GoogleAuthUiClient(
             )
             .setAutoSelectEnabled(true)
             .build()
+    }
+
+
+    // OTHER GOOGLE SIGN IN TECHNIC
+    fun signIn2(): GoogleSignInOptions? {
+        val result = try {
+            googleBuildSignInOptions()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (e is CancellationException) throw e
+            null
+        }
+        return result
+    }
+
+    suspend fun signInWithIntent2(intent: Intent): SignInResult {
+        val credential = GoogleSignIn.getSignedInAccountFromIntent(intent)
+        val googleIdToken = credential.getResult(ApiException::class.java)?.idToken
+        val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
+        return try {
+            val user = auth.signInWithCredential(googleCredentials).await().user
+            SignInResult(
+                data = user?.run {
+                    UserData(
+                        userId = uid,
+                        email = email,
+                        username = displayName,
+                        profilePictureUrl = photoUrl?.toString()
+                    )
+                },
+                errorMessage = null
+            )
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (e is CancellationException) throw e
+            SignInResult(
+                data = null,
+                errorMessage = e.message
+            )
+        }
+    }
+
+    fun googleSingInClient(): Intent {
+        val gso = googleBuildSignInOptions()
+        return GoogleSignIn.getClient(context,gso).signInIntent
+    }
+
+    private fun  googleBuildSignInOptions(): GoogleSignInOptions {
+        return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.web_client_id))
+            .requestEmail()
+            .requestProfile()
+            .build()
+
     }
 }
