@@ -1,5 +1,6 @@
 package com.halilkrkn.mydictionary.presantation.signInScreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.halilkrkn.mydictionary.data.auth.SignInResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,10 @@ class SignInViewModel @Inject constructor(): ViewModel() {
                 signInError = result.errorMessage
             )
         }
+        Log.d("SignInViewModel", "onSignInResult: ${result.data?.username}")
+        Log.d("SignInViewModel", "onSignInResult: ${result.data?.profilePictureUrl}")
+        Log.d("SignInViewModel", "onSignInResult: ${result.data?.email}")
+        Log.d("SignInViewModel", "onSignInResult: ${result.data?.userId}")
     }
 
     fun resetSignInState() {

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">MyDictionary</string>
     <string name="web_client_id">621754811261-1272u179gmmorner0is73o1saos0vdrj.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">1265602640811309</string>
+    <string name="fb_login_protocol_scheme">fb1265602640811309</string>
+    <string name="facebook_client_token">2afbcc47f5f82a5cb84b67b0d7f2db6c</string>
+    <string name="twitter_id_key">tzk7sNvUGhO1oLu0IhQ4BYX1Y</string>
+    <string name="twitter_secret_token">D7eTNmXKPTDRQE4cyl6ss3gfxiH3ITZqlEd7eUJ0H5JDGEJ3SV</string>
 </resources>
