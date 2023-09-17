@@ -1,6 +1,5 @@
-package com.halilkrkn.mydictionary.presantation.signInScreen
+package com.halilkrkn.mydictionary.presantation.auth
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.util.Log
 import android.widget.Toast
@@ -56,22 +55,16 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.OAuthCredential
-import com.google.firebase.auth.OAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.halilkrkn.mydictionary.R
 import com.halilkrkn.mydictionary.data.auth.GoogleAuthUiClientImpl
-import com.halilkrkn.mydictionary.navigation.Screens
+import com.halilkrkn.mydictionary.navigation.screens.BottomBarScreen
+import com.halilkrkn.mydictionary.navigation.util.Graphs.HOME
 import com.halilkrkn.mydictionary.ui.theme.FacebookColor
 import com.halilkrkn.mydictionary.ui.theme.GoogleGreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @Composable
 fun SignInScreen(
@@ -95,7 +88,8 @@ fun SignInScreen(
 
     LaunchedEffect(key1 = Unit) {
         if (googleAuthUiClient.getSignedInUser() != null) {
-            navController.navigate(Screens.Home.route)
+//            navController.popBackStack()
+            navController.navigate(HOME)
         }
     }
 
@@ -154,7 +148,8 @@ fun SignInScreen(
                 "Sign In Successful",
                 Toast.LENGTH_SHORT
             ).show()
-            navController.navigate(Screens.Home.route)
+//            navController.popBackStack()
+            navController.navigate(HOME)
             viewModel.resetSignInState()
         }
     }

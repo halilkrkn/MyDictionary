@@ -1,4 +1,4 @@
-package com.halilkrkn.mydictionary.presantation.signInScreen
+package com.halilkrkn.mydictionary.presantation.auth
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

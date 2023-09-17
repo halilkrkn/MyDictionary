@@ -1,10 +1,11 @@
-package com.halilkrkn.mydictionary.presantation.homeScreen
+package com.halilkrkn.mydictionary.presantation.main.home
 
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +54,8 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
 import com.halilkrkn.mydictionary.data.auth.GoogleAuthUiClientImpl
 import com.halilkrkn.mydictionary.data.auth.UserData
+import com.halilkrkn.mydictionary.navigation.screens.AuthScreen
+import com.halilkrkn.mydictionary.navigation.util.Graphs
 import kotlinx.coroutines.launch
 
 @Composable
@@ -76,15 +79,17 @@ fun HomeScreen(
         onSignOut = {
             lifecycleScope.launch {
                 googleAuthUiClient.signOut()
+                navController.navigate(Graphs.AUTHENTICATION)
                 Toast.makeText(
                     context,
                     "Signed Out",
                     Toast.LENGTH_LONG
                 ).show()
-                navController.popBackStack()
             }
-        }
+        },
     )
+
+
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -201,22 +206,30 @@ fun SignOutPersonTabBar(
                         ) {
                             SignOut(
                                 userData = userData,
-                                onSignOut = onSignOut,
-                                isProfilePopupVisible = isProfilePopupVisible
+                                onSignOut = onSignOut
                             )
                         }
                     }
                 }
             }
         }
-    ) {}
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "HOME SECREEN"
+            )
+        }
+    }
 }
 
 @Composable
 fun SignOut(
     userData: UserData?,
     onSignOut: () -> Unit,
-    isProfilePopupVisible: Boolean
 ) {
     Column(
         modifier = Modifier.wrapContentSize(),
@@ -262,7 +275,6 @@ fun SignOut(
         Button(
             onClick = {
                 // Çıkış işlemi burada yapılabilir
-                isProfilePopupVisible
                 onSignOut()
             }
         ) {
