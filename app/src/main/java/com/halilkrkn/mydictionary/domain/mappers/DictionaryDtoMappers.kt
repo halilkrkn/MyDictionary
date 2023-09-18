@@ -34,14 +34,14 @@ fun PhoneticDto.toPhonetic(): Phonetic {
     )
 }
 
-fun WordInfoDto.toWordInfo(): WordInfo {
-    return WordInfo(
-        meanings = meanings.map {
-            it.toMeaning()
+fun WordInfoDto.toWordInfoEntity(): WordInfoEntity {
+    return WordInfoEntity(
+        meanings = meanings.map { meaningDto ->
+            meaningDto.toMeaning()
         },
         phonetic = phonetic,
-        phonetics = phonetics.map {
-            it.toPhonetic()
+        phonetics = phonetics.map { phoneticDto ->
+            phoneticDto.toPhonetic()
         },
         word = word
     )
@@ -55,3 +55,21 @@ fun WordInfoEntity.toWordInfo(): WordInfo {
         word = word
     )
 }
+/*fun WordInfo.toWordInfoEntity(): WordInfoEntity {
+    return WordInfoEntity(
+        meanings = meanings,
+        phonetic = phonetic,
+        phonetics = phonetics,
+        word = word
+    )
+}
+fun WordInfoDto.toWordInfos(): WordInfo {
+    return WordInfo(
+        meanings = meanings.map { it.toMeaning() },
+        phonetic = phonetic,
+        phonetics = phonetics.map {
+            it.toPhonetic()
+        },
+        word = word
+    )
+}*/
