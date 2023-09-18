@@ -55,21 +55,4 @@ fun WordInfoEntity.toWordInfo(): WordInfo {
         word = word
     )
 }
-/*fun WordInfo.toWordInfoEntity(): WordInfoEntity {
-    return WordInfoEntity(
-        meanings = meanings,
-        phonetic = phonetic,
-        phonetics = phonetics,
-        word = word
-    )
-}
-fun WordInfoDto.toWordInfos(): WordInfo {
-    return WordInfo(
-        meanings = meanings.map { it.toMeaning() },
-        phonetic = phonetic,
-        phonetics = phonetics.map {
-            it.toPhonetic()
-        },
-        word = word
-    )
-}*/
+
