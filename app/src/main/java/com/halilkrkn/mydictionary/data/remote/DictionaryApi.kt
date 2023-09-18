@@ -1,5 +1,6 @@
 package com.halilkrkn.mydictionary.data.remote
 
+import com.halilkrkn.mydictionary.data.remote.dto.WordInfoDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 
