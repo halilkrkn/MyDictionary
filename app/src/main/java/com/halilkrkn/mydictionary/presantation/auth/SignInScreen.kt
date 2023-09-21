@@ -94,11 +94,11 @@ fun SignInScreen(
     }
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
             if (result.resultCode == RESULT_OK) {
                 lifecycleScope.launch {
-                    val signInResult = googleAuthUiClient.signInWithIntent(
+                    val signInResult = googleAuthUiClient.signInWithIntent2(
                         intent = result.data ?: return@launch
                     )
                     viewModel.onSignInResult(signInResult)
@@ -148,24 +148,20 @@ fun SignInScreen(
                 "Sign In Successful",
                 Toast.LENGTH_SHORT
             ).show()
-//            navController.popBackStack()
+            navController.popBackStack()
             navController.navigate(HOME)
             viewModel.resetSignInState()
         }
     }
-
-
 
     SignInButton(
         state = state.value,
         onSignInClick = {
             lifecycleScope.launch {
                 withContext(Dispatchers.Default) {
-                    val signInIntentSender = googleAuthUiClient.signIn()
+                    val signInIntentSender = googleAuthUiClient.googleSingInClient()
                     launcher.launch(
-                        IntentSenderRequest.Builder(
-                            signInIntentSender ?: return@withContext
-                        ).build()
+                        signInIntentSender
                     )
                 }
             }

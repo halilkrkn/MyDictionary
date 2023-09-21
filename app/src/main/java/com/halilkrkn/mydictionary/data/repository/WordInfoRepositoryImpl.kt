@@ -1,10 +1,9 @@
 package com.halilkrkn.mydictionary.data.repository
 
+
 import com.halilkrkn.mydictionary.core.util.Resource
-import com.halilkrkn.mydictionary.data.local.WordInfoDao
+import com.halilkrkn.mydictionary.data.local.DictionaryDao
 import com.halilkrkn.mydictionary.data.remote.DictionaryApi
-import com.halilkrkn.mydictionary.domain.mappers.toWordInfo
-import com.halilkrkn.mydictionary.domain.mappers.toWordInfoEntity
 import com.halilkrkn.mydictionary.domain.model.WordInfo
 import com.halilkrkn.mydictionary.domain.repository.WordInfoRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,41 +13,32 @@ import java.io.IOException
 
 class WordInfoRepositoryImpl(
     private val api: DictionaryApi,
-    private val dao: WordInfoDao
+    private val dao: DictionaryDao
 ): WordInfoRepository {
 
-    override suspend fun getWordInfo(word: String): Flow<Resource<List<WordInfo>>> = flow {
+    override fun getWordInfo(word: String): Flow<Resource<List<WordInfo>>> = flow {
         emit(Resource.Loading())
-        //RoomDatabase için
-        val wordInfos = dao.getWordInfos(word = word).map { wordInfoEntity ->
-            wordInfoEntity.toWordInfo()
-        }
+
+        val wordInfos = dao.getWordInfos(word).map { it.toWordInfo() }
         emit(Resource.Loading(data = wordInfos))
 
-        // Api için
         try {
-            val remoteWordInfo = api.getWordInfo(word)
-            dao.deleteWordInfos(words = remoteWordInfo.map { wordInfoDto ->
-                wordInfoDto.word
-            })
-            dao.insertAllWordInfo(infos = remoteWordInfo.map { wordInfoDto ->
-                wordInfoDto.toWordInfoEntity()
-            })
-        }catch (e: HttpException) {
+            val remoteWordInfos = api.getWordInfo(word)
+            dao.deleteWordInfos(remoteWordInfos.map { it.word })
+            dao.insertAllWordInfo(remoteWordInfos.map { it.toWordInfoEntity() })
+        } catch(e: HttpException) {
             emit(Resource.Error(
-                message = e.localizedMessage ?: "An unexpected error occurred",
+                message = "Oops, something went wrong!",
+                data = wordInfos
+            ))
+        } catch(e: IOException) {
+            emit(Resource.Error(
+                message = "Couldn't reach server, check your internet connection.",
                 data = wordInfos
             ))
         }
-        catch (e: IOException) {
-            emit(Resource.Error(
-                message = e.localizedMessage ?: "Couldn't reach server. Check your internet connection",
-                data = wordInfos
-            ))
-        }
-        val newWordInfos = dao.getWordInfos(word = word).map { wordInfoEntity ->
-            wordInfoEntity.toWordInfo()
-        }
-        emit(Resource.Success(data = newWordInfos))
+
+        val newWordInfos = dao.getWordInfos(word).map { it.toWordInfo() }
+        emit(Resource.Success(newWordInfos))
     }
 }

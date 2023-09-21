@@ -10,51 +10,53 @@ import com.halilkrkn.mydictionary.domain.model.Meaning
 import com.halilkrkn.mydictionary.domain.model.Phonetic
 import com.halilkrkn.mydictionary.domain.model.WordInfo
 
-fun DefinitionDto.toDefinition(): Definition {
-    return Definition(
-        definition = definition,
-        example = example,
-    )
-}
-
-fun MeaningDto.toMeaning(): Meaning {
-    return Meaning(
-        definitions = definitions.map { definitionDto ->
-            definitionDto.toDefinition()
-        },
-        partOfSpeech = partOfSpeech
-    )
-}
-
-fun PhoneticDto.toPhonetic(): Phonetic {
-    return Phonetic(
-        audio = audio,
-        sourceUrl = sourceUrl,
-        text = text
-    )
-}
-
-fun WordInfoDto.toWordInfoEntity(): WordInfoEntity {
-    return WordInfoEntity(
-        meanings = meanings.map { meaningDto ->
-            meaningDto.toMeaning()
-        },
-        phonetic = phonetic,
-        phonetics = phonetics.map { phoneticDto ->
-            phoneticDto.toPhonetic()
-        },
-        word = word
-    )
-}
-
-fun WordInfoEntity.toWordInfo(): WordInfo {
-    return WordInfo(
-        meanings = meanings,
-        phonetic = phonetic,
-        phonetics = phonetics,
-        word = word
-    )
-}
+//fun DefinitionDto.toDefinition(): Definition {
+//    return Definition(
+//        antonyms = antonyms,
+//        definition = definition,
+//        example = example,
+//        synonyms = synonyms
+//    )
+//}
+//
+//fun MeaningDto.toMeaning(): Meaning {
+//    return Meaning(
+//        definitions = definitions.map { definitionDto ->
+//            definitionDto.toDefinition()
+//        },
+//        partOfSpeech = partOfSpeech
+//    )
+//}
+//
+//fun PhoneticDto.toPhonetic(): Phonetic {
+//    return Phonetic(
+//        audio = audio,
+//        sourceUrl = sourceUrl,
+//        text = text
+//    )
+//}
+//
+//fun WordInfoDto.toWordInfoEntity(): WordInfoEntity {
+//    return WordInfoEntity(
+//        meanings = meanings.map { meaningDto ->
+//            meaningDto.toMeaning()
+//        },
+//        phonetic = phonetic,
+//        phonetics = phonetics.map { phoneticDto ->
+//            phoneticDto.toPhonetic()
+//        },
+//        word = word
+//    )
+//}
+//
+//fun WordInfoEntity.toWordInfo(): WordInfo {
+//    return WordInfo(
+//        meanings = meanings,
+////        phonetic = phonetic,
+//        phonetics = phonetics,
+//        word = word
+//    )
+//}
 /*fun WordInfo.toWordInfoEntity(): WordInfoEntity {
     return WordInfoEntity(
         meanings = meanings,

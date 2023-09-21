@@ -167,19 +167,17 @@ class GoogleAuthUiClientImpl @Inject constructor(
             .build()
     }
 
+    private fun  googleBuildSignInOptions(): GoogleSignInOptions {
+        return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.web_client_id))
+            .requestEmail()
+            .requestProfile()
+            .build()
+
+    }
 
 
     // OTHER GOOGLE SIGN IN TECHNIC
-    fun signIn2(): GoogleSignInOptions? {
-        val result = try {
-            googleBuildSignInOptions()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            if (e is CancellationException) throw e
-            null
-        }
-        return result
-    }
 
     suspend fun signInWithIntent2(intent: Intent): SignInResult {
         val credential = GoogleSignIn.getSignedInAccountFromIntent(intent)
@@ -214,12 +212,5 @@ class GoogleAuthUiClientImpl @Inject constructor(
         return GoogleSignIn.getClient(context,gso).signInIntent
     }
 
-    private fun  googleBuildSignInOptions(): GoogleSignInOptions {
-        return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(R.string.web_client_id))
-            .requestEmail()
-            .requestProfile()
-            .build()
 
-    }
 }

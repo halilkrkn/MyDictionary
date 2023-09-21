@@ -29,58 +29,52 @@ class SearchWordInfoViewModel @Inject constructor(
     private val _searchQuery = mutableStateOf<String>("")
     val searchQuery: State<String> = _searchQuery
 
-    private val _state = MutableStateFlow<SearchWordInfoState>(SearchWordInfoState())
-    val state: StateFlow<SearchWordInfoState> = _state.asStateFlow()
+
+    private val _state = mutableStateOf(SearchWordInfoState())
+    val state: State<SearchWordInfoState> = _state
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    private val _searchWidgetState = mutableStateOf(SearchWidgetState.CLOSED)
+    val searchWidgetState: State<SearchWidgetState> = _searchWidgetState
+
+    fun updateSearchWidgetState(newValue: SearchWidgetState) {
+        _searchWidgetState.value = newValue
+    }
 
     private var searchJob: Job? = null
     fun onSearch(query: String) {
         _searchQuery.value = query
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(500L)
-            getWordInfoUseCase(word = query)
-                .onEach { result ->
-                    when (result) {
-                        is Resource.Success -> {
-                           _state.update {  searchWordInfoState ->
-                               searchWordInfoState.copy(
-                                   wordInfoItems = result.data,
-                                   isLoading = false
-                               )
-                           }
-                        }
-
-                        is Resource.Error -> {
-                            _state.update { searchWordInfoState ->
-                                searchWordInfoState.copy(
-                                    wordInfoItems = result.data,
-                                    isLoading = false
-                                )
+                    delay(500L)
+                    getWordInfoUseCase(query)
+                        .onEach { result ->
+                            when(result) {
+                                is Resource.Success -> {
+                                    _state.value = state.value.copy(
+                                        wordInfoItems = result.data ?: emptyList(),
+                                        isLoading = false
+                                    )
+                                }
+                                is Resource.Error -> {
+                                    _state.value = state.value.copy(
+                                        wordInfoItems = result.data ?: emptyList(),
+                                        isLoading = false
+                                    )
+                                    _eventFlow.emit(UIEvent.ShowSnackbar(
+                                        result.message ?: "Unknown error"
+                                    ))
+                                }
+                                is Resource.Loading -> {
+                                    _state.value = state.value.copy(
+                                        wordInfoItems = result.data ?: emptyList(),
+                                        isLoading = true
+                                    )
+                                }
                             }
-                            _eventFlow.emit(UIEvent.ShowSnackbar(
-                                result.message ?: "Unknown Error"
-                            ))
-                            // Yukarıdaki ile aynı
-/*                            _state.value = state.value.copy(
-                                result.data,
-                                isLoading = false
-                            )*/
-                        }
-
-                        is Resource.Loading -> {
-                            _state.update { searchWordInfoState ->
-                                searchWordInfoState.copy(
-                                    wordInfoItems = result.data,
-                                    isLoading = true
-                                )
-                            }
-                        }
-                    }
                 }.launchIn(this)
-
         }
     }
 }

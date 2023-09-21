@@ -2,6 +2,7 @@ package com.halilkrkn.mydictionary.data.local.converters
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.halilkrkn.mydictionary.domain.model.Meaning
 import com.halilkrkn.mydictionary.domain.model.Phonetic
@@ -14,35 +15,57 @@ import java.util.ArrayList
 // Bu anotasyonu kullanabilmek için de RoomDatabase sınıfımızı @ProvidedTypeConverter anotasyonu ile işaretliyoruz.
 @ProvidedTypeConverter
 class Converters(
-    private val jsonParser: JsonParser
+    private val jsonParser: JsonParser,
+//    private val gson: Gson,
 ) {
+/*    @TypeConverter
+    fun fromMeaningsJson(json: String): MeaningsEntity {
+        return gson.fromJson(json, MeaningsEntity::class.java)
+    }
+
+    @TypeConverter
+    fun toMeaningsJson(meanings: MeaningsEntity): String {
+        return gson.toJson(meanings)
+    }
+
+    @TypeConverter
+    fun fromPhoneticsJson(json: String): PhoneticEntity {
+        return gson.fromJson(json, PhoneticEntity::class.java)
+    }
+
+    @TypeConverter
+    fun toPhoneticsJson(phonetics: PhoneticEntity): String {
+        return gson.toJson(phonetics)
+        */
 
     @TypeConverter
     fun fromMeaningsJson(json: String): List<Meaning> {
         return jsonParser.fromJson<ArrayList<Meaning>>(
             json,
-            object : TypeToken<ArrayList<Meaning>>() {}.type
+            object : TypeToken<ArrayList<Meaning>>(){}.type
         ) ?: emptyList()
     }
+
     @TypeConverter
     fun toMeaningsJson(meanings: List<Meaning>): String {
         return jsonParser.toJson(
             meanings,
-            object : TypeToken<ArrayList<Meaning>>() {}.type
+            object : TypeToken<ArrayList<Meaning>>(){}.type
         ) ?: "[]"
     }
     @TypeConverter
-    fun fromPhoneticsJson(json: String): List<Phonetic> {
+    fun fromPhoneticJson(json: String): List<Phonetic> {
         return jsonParser.fromJson<ArrayList<Phonetic>>(
             json,
-            object : TypeToken<ArrayList<Phonetic>>() {}.type
+            object : TypeToken<ArrayList<Phonetic>>(){}.type
         ) ?: emptyList()
     }
+
     @TypeConverter
-    fun toPhoneticsJson(phonetics: List<Phonetic>): String {
+    fun toPhoneticJson(phonetic: List<Phonetic>): String {
         return jsonParser.toJson(
-            phonetics,
-            object : TypeToken<ArrayList<Phonetic>>() {}.type
+            phonetic,
+            object : TypeToken<ArrayList<Phonetic>>(){}.type
         ) ?: "[]"
     }
-}
+    }
