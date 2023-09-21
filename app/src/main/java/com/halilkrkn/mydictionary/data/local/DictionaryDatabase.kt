@@ -8,10 +8,12 @@ import com.halilkrkn.mydictionary.data.local.entity.WordInfoEntity
 
 @Database(
     entities = [WordInfoEntity::class],
-    version = 1
+    version = 2,
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
-abstract class WordInfoDatabase: RoomDatabase() {
+abstract class DictionaryDatabase: RoomDatabase() {
 
-    abstract val dao: WordInfoDao
+    abstract val dao: DictionaryDao
+  
 }

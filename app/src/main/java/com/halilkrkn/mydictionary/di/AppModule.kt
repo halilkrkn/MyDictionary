@@ -1,24 +1,25 @@
 package com.halilkrkn.mydictionary.di
 
-import android.app.Activity
 import android.app.Application
-import android.content.Context
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.signin.internal.SignInClientImpl
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.OAuthCredential
-import com.google.firebase.auth.OAuthProvider
-import com.google.firebase.auth.TwitterAuthProvider
-import com.google.firebase.ktx.Firebase
-import com.halilkrkn.mydictionary.data.auth.GoogleAuthUiClient
-import com.halilkrkn.mydictionary.data.auth.GoogleAuthUiClientImpl
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.google.gson.Gson
+import com.halilkrkn.mydictionary.core.Const.BASE_URL
+import com.halilkrkn.mydictionary.data.local.DictionaryDao
+import com.halilkrkn.mydictionary.data.local.DictionaryDatabase
+import com.halilkrkn.mydictionary.data.local.converters.Converters
+import com.halilkrkn.mydictionary.data.local.converters.GsonParser
+import com.halilkrkn.mydictionary.data.remote.DictionaryApi
+import com.halilkrkn.mydictionary.data.repository.WordInfoRepositoryImpl
+import com.halilkrkn.mydictionary.domain.repository.WordInfoRepository
+import com.halilkrkn.mydictionary.domain.usecase.GetWordInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -27,22 +28,41 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth() = FirebaseAuth.getInstance()
-
-    @Provides
-    @Singleton
-    fun provideSignInClient(@ApplicationContext context: Context) =
-        Identity.getSignInClient(context)
-
-    @Provides
-    @Singleton
-    fun provideGoogleAuthUiClient(
-        @ApplicationContext context: Context,
-        signInClient: SignInClient,
-        firebaseAuth: FirebaseAuth,
-    ): GoogleAuthUiClient {
-        return GoogleAuthUiClientImpl(context, signInClient, firebaseAuth)
+    fun provideGetWordInfoUseCase(repository: WordInfoRepository): GetWordInfoUseCase {
+        return GetWordInfoUseCase(repository = repository)
     }
 
+
+    @Provides
+    @Singleton
+    fun provideWordInfoRepository(
+        api: DictionaryApi,
+        db: DictionaryDatabase
+    ): WordInfoRepository {
+        return WordInfoRepositoryImpl(api,db.dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDictionaryDatabase(app: Application): DictionaryDatabase {
+        return Room.databaseBuilder(
+            context = app,
+            klass = DictionaryDatabase::class.java,
+            name = "dictionary_db"
+        )
+            .addTypeConverter(Converters(GsonParser(Gson())))
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDictionaryApi(): DictionaryApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(DictionaryApi::class.java)
+    }
 
 }

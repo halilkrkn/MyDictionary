@@ -5,11 +5,12 @@ import com.halilkrkn.mydictionary.domain.model.WordInfo
 import com.halilkrkn.mydictionary.domain.repository.WordInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class GetWordInfoUseCase(
+class GetWordInfoUseCase @Inject constructor(
     private val repository: WordInfoRepository
 ) {
-    suspend operator fun invoke(word: String): Flow<Resource<List<WordInfo>>> {
+     operator fun invoke(word: String): Flow<Resource<List<WordInfo>>> {
         if (word.isBlank()){
             return flow {  }
         }

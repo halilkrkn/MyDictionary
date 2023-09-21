@@ -5,5 +5,5 @@ import com.halilkrkn.mydictionary.domain.model.WordInfo
 import kotlinx.coroutines.flow.Flow
 
 interface WordInfoRepository {
-    suspend fun getWordInfo(word: String): Flow<Resource<List<WordInfo>>>
+     fun getWordInfo(word: String): Flow<Resource<List<WordInfo>>>
 }
