@@ -132,7 +132,7 @@ fun SearchScreen(
                         verticalArrangement = Arrangement.Center
                     ){
                         Text(
-                            text ="Lütfen arama yapınız.",
+                            text = if(viewModel.searchQuery.value.isEmpty())"Lütfen bir arama yapınız." else "'${viewModel.searchQuery.value}' ile ilgili bir cevap bulunamadı.",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentWidth(Alignment.CenterHorizontally)

@@ -106,6 +106,12 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.5.2"
 
+    // Splash API
+    implementation "androidx.core:core-splashscreen:1.0.0-alpha02"
+
+    // Lottiee
+    implementation 'com.airbnb.android:lottie-compose:6.1.0'
+
 
     // ONE TAP FACEBOOK SIGN IN WITH FIREBASE
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
